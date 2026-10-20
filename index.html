@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Conferência de Casal – Igreja de Cristo de Orizona</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&family=Playfair+Display:wght@600;800&family=Pinyon+Script&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- HERO -->
+  <header class="hero">
+    <div class="hero__inner">
+      <i class="fa-solid fa-heart hero__heart" aria-hidden="true"></i>
+      <h1>Conferência <span class="script">de Casal</span></h1>
+      <p class="hero__sub">Juntos para fortalecer o que Deus uniu!</p>
+    </div>
+
+    <ul class="info">
+      <li><i class="fa-regular fa-calendar-days"></i><strong>04 e 05</strong><span>de dezembro<br>(sexta e sábado)</span></li>
+      <li><i class="fa-regular fa-clock"></i><strong>19h30</strong><span>início</span></li>
+      <li><i class="fa-solid fa-location-dot"></i><strong>Local</strong><span>Igreja de Cristo<br>de Orizona</span></li>
+      <li><i class="fa-solid fa-sack-dollar"></i><strong>R$ 200,00</strong><span>por casal</span></li>
+    </ul>
+  </header>
+
+  <main>
+   
+<!-- PREGADORES -->
+<section class="section section--light">
+  <h2>Pregadores</h2>
+
+  <div class="speakers">
+
+    <figure>
+      <div class="photo photo--rogerio">
+        <img
+          src="fotos/Pr.Rogerio.png"
+          alt="Pr. Rogério Tolentino"
+        >
+      </div>
+      <figcaption>Pr. Rogério<br>Tolentino</figcaption>
+    </figure>
+
+    <figure>
+      <div class="photo photo--marlon">
+        <img
+          src="fotos/Pr.Marlon.jpg"
+          alt="Pr. Marlon Brito"
+        >
+      </div>
+      <figcaption>Pr. Marlon<br>Brito</figcaption>
+    </figure>
+
+  </div>
+</section>
+
+
+    <!-- PROGRAMAÇÃO -->
+    <section class="section section--wine">
+      <h2><i class="fa-solid fa-utensils"></i> Incluso no valor</h2>
+      <div class="days">
+        <div class="day">
+          <h3>Sexta-feira</h3>
+          <ul>
+            <li><i class="fa-solid fa-bell-concierge"></i> Jantar</li>
+          </ul>
+        </div>
+        <div class="day">
+          <h3>Sábado</h3>
+          <ul>
+            <li><i class="fa-solid fa-mug-hot"></i> Café da manhã</li>
+            <li><i class="fa-solid fa-bell-concierge"></i> Jantar</li>
+          </ul>
+        </div>
+      </div>
+      <p class="closing script">Venha viver esse tempo especial com o seu cônjuge!</p>
+    </section>
+
+    <!-- INSCRIÇÃO -->
+    <section class="section section--light" id="inscricao">
+      <h2>Inscrição</h2>
+
+      <form id="form-inscricao" class="card" novalidate>
+        <h3>Dados do casal</h3>
+
+        <label for="conjuge1">Nome completo do cônjuge 1</label>
+        <input type="text" id="conjuge1" name="conjuge1" autocomplete="name" required>
+
+        <label for="conjuge2">Nome completo do cônjuge 2</label>
+        <input type="text" id="conjuge2" name="conjuge2" required>
+
+        <label for="telefone">WhatsApp do casal</label>
+        <input type="tel" id="telefone" name="telefone" placeholder="(62) 99999-9999" inputmode="numeric" maxlength="15" required>
+
+        <label for="igreja">Igreja / Congregação</label>
+        <input type="text" id="igreja" name="igreja" required>
+
+        <p class="error" id="erro" role="alert" hidden></p>
+
+        <button type="submit" id="btn-enviar">Finalizar Inscrição e Pagar (R$ 200,00)</button>
+        <p class="note">Você será levado ao Mercado Pago para pagar por PIX ou cartão com segurança.</p>
+      </form>
+    </section>
+  </main>
+
+  <footer>
+    <p>Igreja de Cristo de Orizona</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
