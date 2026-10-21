@@ -173,7 +173,7 @@ h1, h2, h3 { font-family: "Playfair Display", Georgia, serif; line-height: 1.15;
 }
 .card h3 { color: var(--wine); font-size: 1.25rem; margin-bottom: 1rem; }
 label { display: block; font-size: .85rem; font-weight: 600; margin: 1rem 0 .3rem; }
-input[type="text"], input[type="tel"] {
+input[type="text"], input[type="email"], input[type="tel"] {
   width: 100%; padding: .8rem .9rem;
   font: inherit; color: var(--ink);
   border: 1.5px solid var(--sand); border-radius: 8px; background: var(--cream);

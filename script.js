@@ -1,6 +1,6 @@
 // ====== CONFIGURAÇÃO ======
 // Troque pela URL de produção quando o backend estiver publicado.
-const API_BASE_URL = "http://localhost:8080";
+const API_BASE_URL = "https://encontro-casais-api.onrender.com";
 const ENDPOINT_INSCRICAO = `${API_BASE_URL}/api/v1/inscricoes`;
 const VALOR_INSCRICAO = 200.0;
 
@@ -8,6 +8,7 @@ const VALOR_INSCRICAO = 200.0;
 const campos = {
   conjuge1: document.getElementById("conjuge1"),
   conjuge2: document.getElementById("conjuge2"),
+  email:    document.getElementById("email"),
   telefone: document.getElementById("telefone"),
   igreja:   document.getElementById("igreja"),
 };
@@ -15,6 +16,7 @@ const form      = document.getElementById("form-inscricao");
 const btnEnviar = document.getElementById("btn-enviar");
 const erro      = document.getElementById("erro");
 const TEXTO_BOTAO = btnEnviar.textContent;
+let envioEmAndamento = false;
 
 // ====== MÁSCARA (XX) XXXXX-XXXX ======
 campos.telefone.addEventListener("input", (e) => {
@@ -45,7 +47,9 @@ function limparErro() {
 
 function setCarregando(carregando) {
   btnEnviar.disabled = carregando;
-  btnEnviar.textContent = carregando ? "Processando, aguarde..." : TEXTO_BOTAO;
+  btnEnviar.textContent = carregando
+    ? "Gerando ambiente seguro de pagamento..."
+    : TEXTO_BOTAO;
 }
 
 function validar() {
@@ -57,6 +61,10 @@ function validar() {
     campos.telefone.classList.add("invalid");
     ok = false;
   }
+  if (!campos.email.validity.valid) {
+    campos.email.classList.add("invalid");
+    ok = false;
+  }
   if (!ok) mostrarErro("Preencha todos os campos corretamente antes de continuar.");
   return ok;
 }
@@ -64,17 +72,21 @@ function validar() {
 // ====== ENVIO PARA O BACKEND ======
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
+  if (envioEmAndamento) return;
+
   limparErro();
   if (!validar()) return;
 
   const payload = {
     nomeConjuge1: campos.conjuge1.value.trim(),
     nomeConjuge2: campos.conjuge2.value.trim(),
+    email:        campos.email.value.trim(),
     telefone:     campos.telefone.value.trim(),
     igreja:       campos.igreja.value.trim(),
     valor:        VALOR_INSCRICAO,
   };
 
+  envioEmAndamento = true;
   setCarregando(true);
 
   try {
@@ -100,5 +112,6 @@ form.addEventListener("submit", async (e) => {
     console.error("Erro ao criar inscrição:", err);
     mostrarErro("Não foi possível concluir sua inscrição agora. Verifique sua conexão e tente novamente em instantes.");
     setCarregando(false);
+    envioEmAndamento = false;
   }
 });
