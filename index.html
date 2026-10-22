@@ -90,19 +90,19 @@
         <h3>Dados do casal</h3>
 
         <label for="conjuge1">Nome completo do cônjuge 1</label>
-        <input type="text" id="conjuge1" name="conjuge1" autocomplete="name" required>
+        <input type="text" id="conjuge1" name="conjuge1" autocomplete="name" minlength="2" maxlength="100" required>
 
         <label for="conjuge2">Nome completo do cônjuge 2</label>
-        <input type="text" id="conjuge2" name="conjuge2" required>
+        <input type="text" id="conjuge2" name="conjuge2" minlength="2" maxlength="100" required>
 
         <label for="email">E-mail para confirmação do pagamento</label>
-        <input type="email" id="email" name="email" placeholder="exemplo@email.com" autocomplete="email" required>
+        <input type="email" id="email" name="email" placeholder="exemplo@email.com" autocomplete="email" maxlength="254" required>
 
         <label for="telefone">WhatsApp do casal</label>
-        <input type="tel" id="telefone" name="telefone" placeholder="(62) 99999-9999" inputmode="numeric" maxlength="15" required>
+        <input type="tel" id="telefone" name="telefone" placeholder="(62) 99999-9999" inputmode="numeric" pattern="\(\d{2}\) \d{4,5}-\d{4}" maxlength="15" required>
 
         <label for="igreja">Igreja / Congregação</label>
-        <input type="text" id="igreja" name="igreja" required>
+        <input type="text" id="igreja" name="igreja" maxlength="120" required>
 
         <p class="error" id="erro" role="alert" hidden></p>
 

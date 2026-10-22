@@ -3,6 +3,11 @@
 const API_BASE_URL = "https://encontro-casais-api.onrender.com";
 const ENDPOINT_INSCRICAO = `${API_BASE_URL}/api/v1/inscricoes`;
 const VALOR_INSCRICAO = 200.0;
+const TEMPO_LIMITE_REQUISICAO_MS = 90000;
+const HOSTS_PAGAMENTO_PERMITIDOS = new Set([
+  "www.mercadopago.com.br",
+  "sandbox.mercadopago.com.br",
+]);
 
 // ====== ELEMENTOS ======
 const campos = {
@@ -48,25 +53,46 @@ function limparErro() {
 function setCarregando(carregando) {
   btnEnviar.disabled = carregando;
   btnEnviar.textContent = carregando
-    ? "Gerando ambiente seguro de pagamento..."
+    ? "Processando inscrição, por favor aguarde..."
     : TEXTO_BOTAO;
 }
 
 function validar() {
   let ok = true;
   for (const c of Object.values(campos)) {
-    if (!c.value.trim()) { c.classList.add("invalid"); ok = false; }
+    const valor = c.value.trim();
+    const comprimentoValido = valor.length >= (c.minLength > 0 ? c.minLength : 1)
+      && valor.length <= c.maxLength;
+    const campoValido = Boolean(valor) && comprimentoValido && c.validity.valid;
+    c.classList.toggle("invalid", !campoValido);
+    if (!campoValido) ok = false;
   }
-  if (campos.telefone.value.replace(/\D/g, "").length < 10) {
+  const telefoneValido = /^\(\d{2}\) \d{4,5}-\d{4}$/.test(campos.telefone.value);
+  if (!telefoneValido) {
     campos.telefone.classList.add("invalid");
-    ok = false;
-  }
-  if (!campos.email.validity.valid) {
-    campos.email.classList.add("invalid");
     ok = false;
   }
   if (!ok) mostrarErro("Preencha todos os campos corretamente antes de continuar.");
   return ok;
+}
+
+function obterUrlPagamento(initPoint) {
+  if (typeof initPoint !== "string") return null;
+
+  try {
+    const url = new URL(initPoint);
+    if (
+      url.protocol !== "https:"
+      || !HOSTS_PAGAMENTO_PERMITIDOS.has(url.hostname)
+      || url.username
+      || url.password
+    ) {
+      return null;
+    }
+    return url.href;
+  } catch {
+    return null;
+  }
 }
 
 // ====== ENVIO PARA O BACKEND ======
@@ -88,30 +114,41 @@ form.addEventListener("submit", async (e) => {
 
   envioEmAndamento = true;
   setCarregando(true);
+  const controller = new AbortController();
+  let tempoEsgotado = false;
+  const timeoutId = window.setTimeout(() => {
+    tempoEsgotado = true;
+    controller.abort();
+  }, TEMPO_LIMITE_REQUISICAO_MS);
 
   try {
     const resposta = await fetch(ENDPOINT_INSCRICAO, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
+      signal: controller.signal,
     });
 
     if (!resposta.ok) {
-      throw new Error(`Resposta do servidor: ${resposta.status}`);
+      throw new Error("Falha na resposta da API.");
     }
 
     const resultado = await resposta.json();
-
-    if (!resultado.initPoint) {
-      throw new Error("A resposta não trouxe o link de pagamento (initPoint).");
+    const urlPagamento = obterUrlPagamento(resultado?.initPoint);
+    if (!urlPagamento) {
+      throw new Error("A API retornou um link de pagamento inválido.");
     }
 
     // Mantém o botão desabilitado: o usuário está sendo redirecionado.
-    window.location.href = resultado.initPoint;
-  } catch (err) {
-    console.error("Erro ao criar inscrição:", err);
-    mostrarErro("Não foi possível concluir sua inscrição agora. Verifique sua conexão e tente novamente em instantes.");
+    window.location.href = urlPagamento;
+  } catch {
+    console.error("Falha ao criar inscrição.");
+    mostrarErro(tempoEsgotado
+      ? "A solicitação demorou mais que o esperado. Verifique sua conexão e tente novamente."
+      : "Não foi possível concluir sua inscrição agora. Verifique sua conexão e tente novamente em instantes.");
     setCarregando(false);
     envioEmAndamento = false;
+  } finally {
+    window.clearTimeout(timeoutId);
   }
 });
